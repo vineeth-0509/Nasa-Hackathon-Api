@@ -117,18 +117,18 @@
 
 
 // netlify-functions/index.js
-const express = require("express");
-const serverless = require("serverless-http");
-const mongoose = require("mongoose");
+import express, { Router, json } from "express";
+import serverless from "serverless-http";
+import { connect, Schema, model } from "mongoose";
 
 const app = express();
-const router = express.Router();
+const router = Router();
 
 // MongoDB connection URL
 const mongoURI = "mongodb+srv://vineeththungani:VINEETHVINEETH@cluster0.z6mqvzy.mongodb.net/factors";
 
 // Connect to MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
   .catch(err => {
     console.error("MongoDB connection error:", err);
@@ -136,7 +136,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 // Define the schema for state data
-const stateSchema = new mongoose.Schema({
+const stateSchema = new Schema({
   name: { type: String, required: true, unique: true },
   co2Level: { type: Number, required: true },
   energyConsumption: { type: Number, required: true },
@@ -145,9 +145,9 @@ const stateSchema = new mongoose.Schema({
 });
 
 // Create a model for state data
-const State = mongoose.model("State", stateSchema);
+const State = model("State", stateSchema);
 
-app.use(express.json());
+app.use(json());
 
 router.post('/state/:name', async (req, res) => {
   const stateName = req.params.name;
@@ -230,4 +230,4 @@ router.get('/states', async (req, res) => {
 
 app.use('/api', router);
 
-module.exports.handler = serverless(app);
+export const handler = serverless(app);
