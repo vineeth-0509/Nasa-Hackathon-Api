@@ -1,0 +1,8 @@
+[build]
+  functions = "netlify-functions"
+  publish = "public" # Set this if you have a static site to serve
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
